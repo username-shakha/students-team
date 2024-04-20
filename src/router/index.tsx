@@ -1,20 +1,23 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import StudentPage from "../pages/StudentPage";
-import StudentTeamPage from "../pages/StudentTeamPage";
+import App from "@/App";
+import StudentsListPage from "@/pages/StudentsListPage";
+import StudentTeamsListPage from "@/pages/StudentTeamsListPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-  },
-  {
-    path: "/student",
-    element: <StudentPage />,
-  },
-  {
-    path: "/student-team",
-    element: <StudentTeamPage />,
+    children: [
+      {
+        path: "/students-list",
+        element: <StudentsListPage />,
+        index: true,
+      },
+      {
+        path: "/student-teams-list",
+        element: <StudentTeamsListPage />,
+      },
+    ],
   },
 ]);
 

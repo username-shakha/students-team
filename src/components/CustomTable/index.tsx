@@ -8,23 +8,22 @@ import {
   TableBody,
 } from "@mui/material";
 import { ReactNode } from "react";
-import { Heads, Student } from "../../types";
+import RowAction from "./RowActions";
+import { CUSTOM_TABLE_HEADS, TStudent } from "@/types";
 
-import RowAction from "./RowAction";
-
-interface Props {
-  heads: Heads[];
+interface ICustomTableProps {
+  heads: CUSTOM_TABLE_HEADS[];
   rows: Record<string, ReactNode>[];
-  handleDelete: (student: Student) => void;
-  handleUpdate: (student: Student) => void;
+  handleDelete: (student: TStudent) => void;
+  handleUpdate: (student: TStudent) => void;
 }
 
-export default function CTable({
+export default function CustomTable({
   heads,
   rows,
   handleDelete,
   handleUpdate,
-}: Props) {
+}: ICustomTableProps) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -42,25 +41,25 @@ export default function CTable({
         </TableHead>
         <TableBody>
           {rows.map((row, i) => (
-            <TableRow
-              key={i}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
+            <TableRow key={i} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
               {heads.map((head) => {
                 if (head.hidden) return null;
+                if (head.render != null) {
+                  return (
+                    <TableCell key={head.key}>
+                      {head.render(row[head.key] as string, row)}
+                    </TableCell>
+                  );
+                }
+
                 return (
-                  <TableCell
-                    key={head.key}
-                    align="left"
-                    component="th"
-                    scope="row"
-                  >
+                  <TableCell key={head.key} align="left" component="th" scope="row">
                     {head.key !== "action" ? (
                       row[head.key]
                     ) : (
                       <RowAction
-                        handleDelete={() => handleDelete(row as Student)}
-                        handleUpdate={() => handleUpdate(row as Student)}
+                        handleDelete={() => handleDelete(row as TStudent)}
+                        handleUpdate={() => handleUpdate(row as TStudent)}
                       />
                     )}
                   </TableCell>

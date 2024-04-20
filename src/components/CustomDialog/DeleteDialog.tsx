@@ -9,13 +9,13 @@ interface IDeleteDialogProps {
   title: string;
 }
 
-export const DeleteDialog: React.FC<IDeleteDialogProps> = ({
+export default function DeleteDialog({
   open,
   onCancel,
   onConfirm,
   title,
   content,
-}) => {
+}: IDeleteDialogProps) {
   return (
     <Dialog open={open}>
       <DialogTitle>
@@ -30,12 +30,7 @@ export const DeleteDialog: React.FC<IDeleteDialogProps> = ({
         </Typography>
       </Box>
       <Box sx={{ p: 3, pt: 2 }} textAlign="right">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onCancel}
-          sx={{ mr: 1 }}
-        >
+        <Button variant="contained" color="primary" onClick={onCancel} sx={{ mr: 1 }}>
           Cancel
         </Button>
         <Button
@@ -50,4 +45,4 @@ export const DeleteDialog: React.FC<IDeleteDialogProps> = ({
       </Box>
     </Dialog>
   );
-};
+}

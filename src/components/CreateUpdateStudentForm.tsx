@@ -1,32 +1,31 @@
-import React, { useEffect } from "react";
-import { FormEvent, useRef } from "react";
-import { Button, Stack, TextField } from "@mui/material";
+import React, { useRef, FormEvent, useEffect } from "react";
+import { SelectChangeEvent, Stack, TextField, Button } from "@mui/material";
+import { createStudent, updateStudent } from "@/store/slices/studentsSlice";
 import { v4 as uuidv4 } from "uuid";
-import { useAppDispatch } from "../store";
-import { create, update } from "../features/student";
-import CustomSelect from "./Select";
-import { SelectChangeEvent } from "@mui/material/Select";
-import { Student } from "../types";
+import { useAppDispatch } from "@/store";
+import CustomSelect from "./CustomSelect";
+import { TStudent } from "@/types";
 
-const role_select_options = [
-  { value: "master", label: "Master" },
-  { value: "bachelor", label: "Bachelor" },
-];
+const SELECT_OPTIONS = {
+  role: [
+    { value: "MASTER", label: "Master" },
+    { value: "BACHELOR", label: "Bachelor" },
+  ],
+  gender: [
+    { value: "MALE", label: "Male" },
+    { value: "FEMALE", label: "Female" },
+  ],
+};
 
-const gender_select_options = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-];
-
-interface CreateStudentProps {
-  initial?: Student;
+interface CreateUpdateStudentFormProps {
+  initialState?: TStudent;
   onClose: () => void;
 }
 
-export default function CreateStudent({
-  initial,
+export default function CreateUpdateStudentForm({
+  initialState,
   onClose,
-}: CreateStudentProps) {
+}: CreateUpdateStudentFormProps) {
   const dispatch = useAppDispatch();
   const nameRef = useRef<HTMLInputElement>(null);
   const surnameRef = useRef<HTMLInputElement>(null);
@@ -34,18 +33,19 @@ export default function CreateStudent({
   // const roleRef = useRef<HTMLInputElement>(null);
   // const genderRef = useRef<HTMLInputElement>(null);
 
-  const [role, setRole] = React.useState<"master" | "bachelor">("master");
-  const [gender, setGender] = React.useState<"male" | "female">("male");
+  const [role, setRole] = React.useState<TStudent["role"]>("MASTER");
+  const [gender, setGender] = React.useState<TStudent["gender"]>("MALE");
   //roleRef, genderRef
   const all = [nameRef, surnameRef, emailRef];
 
-  const roleHandleChange = (event: SelectChangeEvent<string>) => {
-    setRole(event.target.value);
-  };
-
-  const genderHandleChange = (event: SelectChangeEvent<string>) => {
-    setGender(event.target.value);
-  };
+  const handleSelectChange =
+    (type: "role" | "gender") => (event: SelectChangeEvent<string>) => {
+      if (type === "role") {
+        setRole(event.target.value as TStudent["role"]);
+      } else if (type === "gender") {
+        setGender(event.target.value as TStudent["gender"]);
+      }
+    };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -62,11 +62,11 @@ export default function CreateStudent({
         gender: gender,
       };
       if (student) {
-        if (initial) {
-          dispatch(update({ student: student, id: initial.id }));
+        if (initialState) {
+          dispatch(updateStudent({ student: student, id: initialState.id }));
           onClose();
         } else {
-          dispatch(create(student));
+          dispatch(createStudent(student));
           onClose();
         }
       }
@@ -74,15 +74,15 @@ export default function CreateStudent({
   };
 
   useEffect(() => {
-    if (initial) {
-      const { name, surname, email, role, gender } = initial;
+    if (initialState) {
+      const { name, surname, email, role, gender } = initialState;
       if (nameRef.current) nameRef.current.value = name;
       if (surnameRef.current) surnameRef.current.value = surname;
       if (emailRef.current) emailRef.current.value = email;
       if (role) setRole(role);
       if (gender) setGender(gender);
     }
-  }, [initial]);
+  }, [initialState]);
   return (
     <>
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -95,25 +95,20 @@ export default function CreateStudent({
             disabledLabel
             label="Role"
             value={role}
-            options={role_select_options}
-            onChange={roleHandleChange}
+            options={SELECT_OPTIONS.role}
+            onChange={(event) => handleSelectChange("role")(event)}
           />
 
           <CustomSelect
             label="Gender"
             value={gender}
-            options={gender_select_options}
-            onChange={genderHandleChange}
+            options={SELECT_OPTIONS.gender}
+            onChange={(event) => handleSelectChange("gender")(event)}
           />
 
           {/* <TextField label="Gender" inputRef={genderRef} /> */}
           <Stack direction={"row"} spacing={2}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="secondary"
-              onClick={onClose}
-            >
+            <Button fullWidth variant="contained" color="secondary" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" variant="contained" color="primary" fullWidth>
