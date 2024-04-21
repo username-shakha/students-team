@@ -49,6 +49,30 @@ export const studentsList: TStudent[] = [
     role: "BACHELOR",
     gender: "FEMALE",
   },
+  {
+    id: "7",
+    name: "Jayson",
+    surname: "Mak",
+    email: "jordanchemp@gmail.com",
+    role: "MASTER",
+    gender: "MALE",
+  },
+  {
+    id: "8",
+    name: "AniLora",
+    surname: "lora",
+    email: "lorasimple@mail.ru",
+    role: "BACHELOR",
+    gender: "FEMALE",
+  },
+  {
+    id: "9",
+    name: "Jakh",
+    surname: "Khalib",
+    email: "Khalib@example.com",
+    role: "BACHELOR",
+    gender: "MALE",
+  },
 ];
 
 export const studentTeamsList: TTeam[] = [
