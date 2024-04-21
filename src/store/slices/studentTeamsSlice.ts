@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TStudentTeam } from "@/types";
+import { TTeam } from "@/types";
 import { studentTeamsList } from "@/database";
-type TUpdateStudentTeam = PayloadAction<{ team: TStudentTeam; id: TStudentTeam["id"] }>;
-type TRemoveStudentTeam = PayloadAction<TStudentTeam["id"]>;
-type TCreateStudentTeam = PayloadAction<TStudentTeam>;
-const initialState: TStudentTeam[] = studentTeamsList;
+type TUpdateStudentTeam = PayloadAction<{ team: TTeam; id: TTeam["id"] }>;
+type TRemoveStudentTeam = PayloadAction<TTeam["id"]>;
+type TCreateStudentTeam = PayloadAction<TTeam>;
+const initialState: TTeam[] = studentTeamsList;
 
 const studentTeamsSlice = createSlice({
   name: "studentTeams",
@@ -22,7 +22,7 @@ const studentTeamsSlice = createSlice({
   },
 });
 
-function findIndexById(state: TStudentTeam[], id: TStudentTeam["id"]) {
+function findIndexById(state: TTeam[], id: TTeam["id"]) {
   return state.findIndex((element) => element.id === id);
 }
 export const { updateStudentTeam, removeStudentTeam, createStudentTeam } =

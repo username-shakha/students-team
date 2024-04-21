@@ -31,6 +31,7 @@ export default function CustomSelect({
       <FormControl fullWidth>
         {disabledLabel !== true && <InputLabel>{label}</InputLabel>}
         <Select
+          size="small"
           value={value}
           onChange={onChange}
           {...(disabledLabel !== true && {

@@ -3,22 +3,29 @@ import CreateUpdateStudentTeamForm from "@/components/CreateUpdateStudentTeamFor
 import { STUDENT_TEAMS_LIST_HEADS } from "@/constants/CustomTable";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { removeStudentTeam } from "@/store/slices";
-import { selectStudentTeams } from "@/store/slices/selectors";
+import { selectStudents, selectTeams } from "@/store/slices/selectors";
+import { TTeam } from "@/types";
 import { Add } from "@mui/icons-material";
 import { Container, Stack, Typography, Button } from "@mui/material";
 import { useState, useMemo } from "react";
-
+export type currentTeam = {
+  id: string;
+  name: string;
+  students: string;
+};
 export default function StudentTeamsListPage() {
-  const studentTeamsList = useAppSelector(selectStudentTeams);
+  const students = useAppSelector(selectStudents);
+  const teams = useAppSelector(selectTeams);
   const dispatch = useAppDispatch();
   const [modalType, setModalType] = useState(false);
+  const [current, setCurrent] = useState<currentTeam | null>(null);
 
   const handleModalClose = () => {
     setModalType(false);
   };
-  const studentTeamsListMemoized = useMemo(() => {
-    if (!studentTeamsList) return [];
-    return studentTeamsList.map((g) => ({
+  const teamsMemoized = useMemo(() => {
+    if (!teams) return [];
+    return teams.map((g) => ({
       id: g?.id || "",
       name: g?.name || "",
       students: `${g?.students
@@ -29,8 +36,8 @@ export default function StudentTeamsListPage() {
         .map((student) => `${student?.firstname} ${student?.lastname}`)
         .join("&")}`,
     }));
-  }, [studentTeamsList]);
-  // console.log(studentTeamsListMemoized);
+  }, [teams]);
+
   return (
     <Container>
       <Stack direction="row" alignItems="center">
@@ -40,6 +47,7 @@ export default function StudentTeamsListPage() {
         <Button
           size="small"
           variant="contained"
+          disabled={students.length < 1}
           color="info"
           startIcon={<Add />}
           onClick={() => setModalType(true)}
@@ -49,12 +57,15 @@ export default function StudentTeamsListPage() {
       </Stack>
       <CustomTable
         heads={STUDENT_TEAMS_LIST_HEADS}
-        rows={studentTeamsListMemoized}
-        handleDelete={(student) => dispatch(removeStudentTeam(student.id))}
-        handleUpdate={() => {}}
+        rows={teamsMemoized}
+        handleDelete={(team) => dispatch(removeStudentTeam(team.id as TTeam["id"]))}
+        handleUpdate={(team) => setCurrent(team as currentTeam)}
       />
       <CustomModal open={modalType} onClose={handleModalClose} title={"Add Team"}>
-        <CreateUpdateStudentTeamForm onClose={handleModalClose} />
+        <CreateUpdateStudentTeamForm
+          initialState={current ?? undefined}
+          onClose={handleModalClose}
+        />
       </CustomModal>
     </Container>
   );

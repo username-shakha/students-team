@@ -16,7 +16,7 @@ export type TStudent = {
   gender: "MALE" | "FEMALE";
 };
 
-export interface TStudentTeam {
+export interface TTeam {
   id: string;
   name: string;
   students: {

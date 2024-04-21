@@ -1,4 +1,4 @@
-import { TStudent, TStudentTeam } from "@/types";
+import { TStudent, TTeam } from "@/types";
 
 export const studentsList: TStudent[] = [
   {
@@ -51,7 +51,7 @@ export const studentsList: TStudent[] = [
   },
 ];
 
-export const studentTeamsList: TStudentTeam[] = [
+export const studentTeamsList: TTeam[] = [
   {
     id: "1",
     name: "Smart Team",

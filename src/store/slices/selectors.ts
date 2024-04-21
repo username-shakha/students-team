@@ -1,6 +1,5 @@
 import { RootState } from "@/store";
-import { TStudent, TStudentTeam } from "@/types";
+import { TStudent, TTeam } from "@/types";
 const selectStudents: (store: RootState) => TStudent[] = (store) => store.students;
-const selectStudentTeams: (store: RootState) => TStudentTeam[] = (store) =>
-  store.studentTeams;
-export { selectStudents, selectStudentTeams };
+const selectTeams: (store: RootState) => TTeam[] = (store) => store.studentTeams;
+export { selectStudents, selectTeams };

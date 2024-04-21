@@ -87,9 +87,9 @@ export default function CreateUpdateStudentForm({
     <>
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <Stack spacing={2} width={400}>
-          <TextField label="Name" inputRef={nameRef} />
-          <TextField label="Surname" inputRef={surnameRef} />
-          <TextField label="Email" inputRef={emailRef} />
+          <TextField label="Name" inputRef={nameRef} size="small" />
+          <TextField label="Surname" inputRef={surnameRef} size="small" />
+          <TextField label="Email" inputRef={emailRef} size="small" />
           {/* <TextField label="Role" inputRef={roleRef} /> */}
           <CustomSelect
             disabledLabel

@@ -9,13 +9,13 @@ import {
 } from "@mui/material";
 import { ReactNode } from "react";
 import RowAction from "./RowActions";
-import { CUSTOM_TABLE_HEADS, TStudent } from "@/types";
+import { CUSTOM_TABLE_HEADS } from "@/types";
 
 interface ICustomTableProps {
   heads: CUSTOM_TABLE_HEADS[];
   rows: Record<string, ReactNode>[];
-  handleDelete: (student: TStudent) => void;
-  handleUpdate: (student: TStudent) => void;
+  handleDelete: (currentRowData: Record<string, ReactNode>) => void;
+  handleUpdate: (currentRowData: Record<string, ReactNode>) => void;
 }
 
 export default function CustomTable({
@@ -58,8 +58,8 @@ export default function CustomTable({
                       row[head.key]
                     ) : (
                       <RowAction
-                        handleDelete={() => handleDelete(row as TStudent)}
-                        handleUpdate={() => handleUpdate(row as TStudent)}
+                        handleDelete={() => handleDelete(row)}
+                        handleUpdate={() => handleUpdate(row)}
                       />
                     )}
                   </TableCell>

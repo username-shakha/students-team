@@ -25,7 +25,7 @@ export default function StudentsListPage() {
   };
 
   const handleDeleteStudent = () => {
-    if (current && studentsList.length > 1) {
+    if (current && studentsList.length >= 1) {
       dispatch(removeStudent(current.id));
     }
     handleModalClose();
@@ -52,11 +52,11 @@ export default function StudentsListPage() {
           heads={STUDENT_LIST_HEADS}
           rows={studentsList}
           handleDelete={(student) => {
-            setCurrent(student);
+            setCurrent(student as TStudent);
             setModalType("delete");
           }}
           handleUpdate={(student) => {
-            setCurrent(student);
+            setCurrent(student as TStudent);
             setModalType("update");
           }}
         />
