@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useRef, ChangeEvent } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   Box,
@@ -25,6 +25,12 @@ const BoxStyled = styled(Box)({
   gap: "20px",
 });
 
+const FormControlLabelStyled = styled(FormControlLabel)({
+  margin: "8px 0px 8px 8px",
+  padding: "10px 20px 10px 0px ",
+  "&:hover": { backgroundColor: "#b3a0a014", borderRadius: "10px" },
+});
+
 interface Props {
   onClose: () => void;
   initialState?: currentTeam;
@@ -40,24 +46,42 @@ export default function CreateUpdateStudentTeamForm({ onClose }: Props) {
     return { ...student, busy };
   });
 
-  const [name, setName] = useState<string>("");
+  const nameRef = useRef<HTMLInputElement>(null);
   const [master, setMaster] = useState<string | null>(null);
-  const [bachelor, setBachelor] = useState<string[]>([]);
+  const [bachelors, setBachelors] = useState<string[]>([]);
+
+  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>, id: TStudent["id"]) => {
+    e.target.checked
+      ? setBachelors((prev) => [...prev, id])
+      : setBachelors((prev) => prev.filter((el) => el !== id));
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const selectedMaster = students.find((student) => student.id === master);
-    const selectedBachelors = bachelor.map((id) =>
+    const selectedBachelors = bachelors.map((id) =>
       students.find((student) => student.id === id)
     );
+
     const studentsToAdd = [];
     if (selectedMaster) studentsToAdd.push(formatStudent(selectedMaster));
     if (selectedBachelors.length > 0)
       selectedBachelors.forEach((bachelor) => {
         if (bachelor) studentsToAdd.push(formatStudent(bachelor));
       });
-    if (name && studentsToAdd.length === 3) {
-      dispatch(createStudentTeam({ id: uuidv4(), name, students: studentsToAdd }));
+
+    if (
+      nameRef.current !== null &&
+      nameRef.current.value !== "" &&
+      studentsToAdd.length === 3
+    ) {
+      dispatch(
+        createStudentTeam({
+          id: uuidv4(),
+          name: nameRef.current.value,
+          students: studentsToAdd,
+        })
+      );
       resetForm();
       onClose();
     }
@@ -71,19 +95,18 @@ export default function CreateUpdateStudentTeamForm({ onClose }: Props) {
   });
 
   const resetForm = () => {
-    setName("");
     setMaster(null);
-    setBachelor([]);
+    setBachelors([]);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <TextField
+        inputRef={nameRef}
         label="Team Name"
         size="small"
         fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        inputProps={{ maxLength: 30 }}
       />
       <BoxStyled>
         {["MASTER", "BACHELOR"].map((role) => {
@@ -96,16 +119,14 @@ export default function CreateUpdateStudentTeamForm({ onClose }: Props) {
               <Typography variant="h6">
                 {role === "MASTER" ? "Masters" : "Bachelors"}
               </Typography>
+
               {studentComparison.map((student) => {
                 const { id, name, email, busy, role: current } = student;
                 if (current === role) {
                   return (
-                    <FormControlLabel
+                    <FormControlLabelStyled
                       sx={{
-                        m: 1,
                         mr: role === "MASTER" ? 1 : 5,
-                        padding: "10px 20px 10px 0px ",
-                        "&:hover": { backgroundColor: "#b3a0a014", borderRadius: "10px" },
                       }}
                       key={id}
                       value={name}
@@ -119,14 +140,10 @@ export default function CreateUpdateStudentTeamForm({ onClose }: Props) {
                         ) : (
                           <Checkbox
                             disabled={busy}
-                            checked={bachelor.includes(id) || busy}
+                            checked={bachelors.includes(id) || busy}
                             onChange={(e) => {
-                              if (e.target.checked && bachelor.length >= 2) return;
-                              e.target.checked
-                                ? setBachelor((prev) => [...prev, id])
-                                : setBachelor((prev) =>
-                                    prev.filter((studentId) => studentId !== id)
-                                  );
+                              if (e.target.checked && bachelors.length >= 2) return;
+                              else checkboxHandler(e, id);
                             }}
                           />
                         )
