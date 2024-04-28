@@ -25,18 +25,18 @@ export default function StudentTeamsListPage() {
   };
   const teamsMemoized = useMemo(() => {
     if (!teams) return [];
-    return teams.map((g) => ({
-      id: g?.id || "",
-      name: g?.name || "",
-      students: `${g?.students
+    return teams.map((team) => ({
+      id: team?.id || "",
+      name: team?.name || "",
+      students: `${team?.students
         ?.filter((student) => student.role === "MASTER")
         .map((student) => `${student?.firstname} ${student?.lastname}`)
-        .join("&")}<>${g?.students
+        .join("&")}<>${team?.students
         ?.filter((student) => student?.role === "BACHELOR")
         .map((student) => `${student?.firstname} ${student?.lastname}`)
         .join("&")}`,
     }));
-  }, [teams]);
+  }, [teams, students]);
 
   return (
     <Container>
